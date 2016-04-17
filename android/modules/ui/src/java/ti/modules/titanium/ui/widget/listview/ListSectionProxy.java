@@ -702,6 +702,7 @@ public class ListSectionProxy extends ViewProxy{
 		for (int i = 0; i < childrenItem.size(); i++) {
 			DataItem child = childrenItem.get(i);
 			TiViewProxy proxy = child.getViewProxy();
+			try {
 			TiUIView view = proxy.createView(proxy.getActivity());
 			view.registerForTouch();
 			proxy.setView(view);
@@ -716,6 +717,7 @@ public class ListSectionProxy extends ViewProxy{
 			} else {
 				parentContent.add(view);
 			}
+			} catch (Exception e) {}
 
 		}
 	}
