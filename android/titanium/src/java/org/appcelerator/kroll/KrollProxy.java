@@ -74,7 +74,7 @@ public class KrollProxy implements Handler.Callback, KrollProxySupport, OnLifecy
 
 	protected Map<String, HashMap<Integer, KrollEventCallback>> eventListeners;
 	protected KrollObject krollObject;
-	protected WeakReference<Activity> activity;
+	protected Activity activity;
 	protected String proxyId;
 	protected TiUrl creationUrl;
 	protected KrollProxyListener modelListener;
@@ -177,12 +177,12 @@ public class KrollProxy implements Handler.Callback, KrollProxySupport, OnLifecy
 
 	protected void initActivity(Activity activity)
 	{
-		this.activity = new WeakReference<Activity>(activity);
+		this.activity = activity;
 	}
 
 	public void setActivity(Activity activity)
 	{
-		this.activity = new WeakReference<Activity>(activity);
+		this.activity = activity;
 	}
 
 	public void attachActivityLifecycle(Activity activity)
@@ -197,10 +197,7 @@ public class KrollProxy implements Handler.Callback, KrollProxySupport, OnLifecy
 	 */
 	public Activity getActivity()
 	{
-		if (activity == null) {
-			return null;
-		}
-		return activity.get();
+		return activity;
 	}
 
 	/**
