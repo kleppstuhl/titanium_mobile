@@ -77,7 +77,9 @@ public class TiUIScrollableView extends TiUIView
 			@Override
 			public boolean onTouchEvent(MotionEvent event) {
 				if (mEnabled) {
-					return super.onTouchEvent(event);
+					try {
+						return super.onTouchEvent(event);
+					} catch (Exception e) {}
 				}
 
 				return false;
@@ -86,7 +88,9 @@ public class TiUIScrollableView extends TiUIView
 			@Override
 			public boolean onInterceptTouchEvent(MotionEvent event) {
 				if (mEnabled) {
-					return super.onInterceptTouchEvent(event);
+					try {
+						return super.onInterceptTouchEvent(event);
+					} catch (Exception e) {}
 				}
 
 				return false;
@@ -154,8 +158,7 @@ public class TiUIScrollableView extends TiUIView
 				// `onPageScrollStateChanged` handler is never run, and therefore
 				// we forgot to inform the Javascripters that the user just scrolled
 				// their thing.
-
-				if (!justFiredDragEnd && mCurIndex != -1) {
+				if (!justFiredDragEnd && mCurIndex != -1 && !(mCurIndex >= mViews.size()) ) {
 					((ScrollableViewProxy)proxy).fireScrollEnd(mCurIndex, mViews.get(mCurIndex));
 
 					if (shouldShowPager()) {
@@ -192,6 +195,7 @@ public class TiUIScrollableView extends TiUIView
 				// half up; ie, if it has a value of 1.5, it will be rounded up to 2; if
 				// it has a value of 1.4, it will be rounded down to 1.
 				mCurIndex = (int) Math.floor(positionFloat + 0.5);
+				if(mCurIndex >= mViews.size()) return;
 				((ScrollableViewProxy)proxy).fireScroll(mCurIndex, positionFloat, mViews.get(mCurIndex));
 
 				// Note that we didn't just fire a `dragend`.  See the above comment
@@ -437,7 +441,6 @@ public class TiUIScrollableView extends TiUIView
 
 	public void setViews(Object viewsObject)
 	{
-		boolean changed = false;
 		clearViewsList();
 
 		if (viewsObject instanceof Object[]) {
@@ -449,13 +452,12 @@ public class TiUIScrollableView extends TiUIView
 					tv.setActivity(activity);
 					tv.setParent(this.proxy);
 					mViews.add(tv);
-					changed = true;
 				}
 			}
 		}
-		if (changed) {
+		try {
 			mAdapter.notifyDataSetChanged();
-		}
+		} catch (Exception e) {}		
 	}
 
 	public ArrayList<TiViewProxy> getViews()
@@ -491,12 +493,14 @@ public class TiUIScrollableView extends TiUIView
 
 		@Override
 		public void destroyItem(View container, int position, Object object)
-		{
-			((ViewPager) container).removeView((View) object);
-			if (position < mViewProxies.size()) {
-				TiViewProxy proxy = mViewProxies.get(position);
-				proxy.releaseViews();
-			}
+		{	
+			try {
+				((ViewPager) container).removeView((View) object);
+				if (position < mViewProxies.size()) {
+					TiViewProxy proxy = mViewProxies.get(position);
+					proxy.releaseViews();
+				}
+			} catch (Exception e) {}
 		}
 
 		@Override
